@@ -77,3 +77,11 @@ router.post('/signin', (request,response)=>{
     })
 
 })
+
+router.post('/forgot-password', (request, response) => {
+    response.send('forgot-password')
+})
+  
+router.post('/reset-password', (request, response) => {
+    response.send('reset-password')
+})
