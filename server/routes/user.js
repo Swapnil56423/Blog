@@ -46,3 +46,34 @@ router.post('/signup',(request, response) => {
         }
       })
 })
+
+router.post('/signin', (request,response)=>{
+    const { email, password } = request.body
+
+    const connection = db.openConnection()
+  
+    // encrypt the password
+    const encryptedPassword = cryptoJs.MD5(password)
+  
+    const statement = `
+    select 
+      id, firstName, lastName from user 
+    where 
+      email = '${email}' and 
+      password = '${encryptedPassword}'`
+  
+    connection.query(statement, (error, users) => {
+      connection.end()
+  
+      if (error) {
+        response.send(utils.createResult(error))
+      } else if (users.length == 0) {
+        // there is no user matching the criteria
+        response.send(utils.createResult('user not found'))
+      } else {
+        const user = users[0]
+        response.send(utils.createResult(null, user))
+      }
+    })
+
+})
