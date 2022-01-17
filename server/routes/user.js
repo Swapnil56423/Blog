@@ -85,3 +85,6 @@ router.post('/forgot-password', (request, response) => {
 router.post('/reset-password', (request, response) => {
     response.send('reset-password')
 })
+
+ // used to export the router which has all the apis added
+ module.exports = router
