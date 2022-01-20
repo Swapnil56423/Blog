@@ -86,5 +86,77 @@ router.post('/reset-password', (request, response) => {
     response.send('reset-password')
 })
 
+
+router.get('/profile/:id', (request, response) => {
+  const { id } = request.params
+  const statement = `
+    select
+      id,
+      email,
+      firstName,
+      lastName,
+      addressLine1,
+      addressLine2,
+      city,
+      state,
+      country,
+      gender,
+      phone,
+      birthDate
+    from user
+    where id = ${id}
+  `
+  const connection = db.openConnection()
+  connection.query(statement, (error, records) => {
+    connection.end()
+    if (records.length > 0) {
+      response.send(utils.createResult(error, records[0]))
+    } else {
+      response.send(utils.createResult('user does not exist'))
+    }
+  })
+})
+
+
+
+
+router.put('/profile/:id', (request, response) => {
+  const { id } = request.params
+  const {
+    firstName,
+    lastName,
+    addressLine1,
+    addressLine2,
+    city,
+    state,
+    country,
+    gender,
+    phone,
+    birthDate,
+  } = request.body
+
+  const statement = `
+    update user
+    set
+      firstName = '${firstName}',
+      lastName = '${lastName}',
+      addressLine1 = '${addressLine1}',
+      addressLine2 = '${addressLine2}',
+      city = '${city}',
+      state = '${state}',
+      country = '${country}',
+      gender = '${gender}',
+      phone = '${phone}',
+      birthDate = '${birthDate}'
+    where
+      id = ${id}
+  `
+  const connection = db.openConnection()
+  connection.query(statement, (error, result) => {
+    connection.end()
+    response.send(utils.createResult(error, result))
+  })
+})
+
  // used to export the router which has all the apis added
  module.exports = router
